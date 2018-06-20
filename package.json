@@ -1,0 +1,19 @@
+{
+  "name": "cryptomon-dapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "deploy.js",
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git-codecommit.eu-west-3.amazonaws.com/v1/repos/cryptomon-dapp"
+  },
+  "author": "Riccardo Rispoli",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "github:ethereum/web3.js"
+  }
+}
