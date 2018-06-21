@@ -11,103 +11,183 @@
   </head>
 
   <body>
-    <div class="container" style="width: 650px;">
+    <div class="container" style="width:1300px">
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-20">
           <h1 class="text-center bold" style="padding-top:15px"><strong>CryptoMons GUI</strong></h1>
           <hr>
-          <div id="cryptomons-list">
+          <div id="admin-panel" style="display: none">
             <div class="panel panel-info">
-              <div class="panel-heading text-center"><strong>Your CryptoMons</strong></div>
+              <div class="panel-heading text-center"><strong>Admin Panel</strong></div>
               <div class="panel-body">
-                <table class="table" style="margin-bottom: 0px">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Level</th>
-                      <th scope="col">Attack</th>
-                      <th scope="col">Defense</th>
-                      <th scope="col">Speed</th>
-                      <th scope="col">EXP</th>
-                    </tr>
-                  </thead>
-                  <tbody id="list"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="panel panel-info">
-            <div class="panel-heading text-center"><strong>Team selector</strong></div>
-            <div class="panel-body">
-              <div id="cryptomons-team-selector">
-                <form onSubmit="App.teamSelect(); return false" role="form">
+                <form onSubmit="App.adminPanel(); return false" role="form">
                   <div class="form-inline">
-                    <select class="form-control" id="team-1"></select>
-                    <select class="form-control" id="team-2"></select>
-                    <select class="form-control" id="team-3"></select>
-                    <select class="form-control" id="team-4"></select>
-                    <select class="form-control" id="team-5"></select>
+                    <select class="form-control" id="parameter" style="width:170px">
+                      <option selected disabled>Select parameter</option>
+                      <option>Standard Box Price</option>
+                      <option>Plus Box Price</option>
+                      <option>Maxi Box Price</option>
+                      <option>Modifier Standard</option>
+                      <option>Modifier Plus</option>
+                      <option>Modifier Maxi</option>
+                      <option>Matchmaking Range</option>
+                    </select>
+                    <span style="padding-left:10px"><strong>Assign new value:</strong></span>
+                    <input type="number" class="form-control" id="parameter-value" placeholder="Value" style="width:180px;">
                     <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
                   </div>
                 </form>
-                <h4><div id="team" style="padding-top:5px; padding-botton:0px"><strong>Team:</strong> </div></h4>
               </div>
             </div>
+            <hr>
           </div>
-          <hr>
-          <div class="panel panel-info">
-            <div class="panel-heading text-center"><strong>CryptoMons Battle</strong></div>
-            <div class="panel-body">
-              <div id="cryptomons-battle">
-                <table class="table" style="margin-bottom: 0px">
-                  <thead>
-                    <tr>
-                      <th scope="col">Address</th>
-                      <th scope="col">Fight</th>
-                    </tr>
-                  </thead>
-                  <tbody id="battle-list"></tbody>
-                </table>
-                <form onSubmit="App.defend(); return false" role="form">
-                  <div class="text-center form-inline" id="defend" style="padding-top:10px">
-                    <button type="submit" class="btn btn-md btn-success"><strong>Defend</strong></button>
+          <table>
+            <tr valign="top">
+              <td>
+                <div id="cryptomons-list">
+                  <div class="panel panel-info" style="width:800px">
+                    <div class="panel-heading text-center" data-toggle="collapse" href="#collapse-list"><strong>Your CryptoMons</strong></div>
+                    <div class="panel-body panel-collapse collapse in" id="collapse-list">
+                      <table class="table" style="margin-bottom: 0px">
+                        <thead>
+                          <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Level</th>
+                            <th scope="col">Attack</th>
+                            <th scope="col">Defense</th>
+                            <th scope="col">Speed</th>
+                            <th scope="col">EXP</th>
+                          </tr>
+                        </thead>
+                        <tbody id="list"></tbody>
+                      </table>
+                    </div>
                   </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="panel panel-info">
-            <div class="panel-heading text-center"><strong>Buy CryptoMons Packs</strong></div>
-            <div class="panel-body">
-              <div id="cryptomons-buy">
-                <form onSubmit="App.selectPack(); return false" role="form"><!--Add action!-->
-                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-lg btn-default">
-                      <input type="radio" name="options" id="standard" autocomplete="off"> Standard
-                    </label>
-                    <label class="btn btn-lg btn-default">
-                      <input type="radio" name="options" id="plus" autocomplete="off"> Plus
-                    </label>
-                    <label class="btn btn-lg btn-default">
-                      <input type="radio" name="options" id="maxi" autocomplete="off"> Maxi
-                    </label>
+                </div>
+                <hr>
+                <div class="panel panel-info" style="width:800px">
+                  <div class="panel-heading text-center" data-toggle="collapse" href="#collapse-market"><strong>CrytoMons Market</strong></div>
+                  <div class="panel-body panel-collapse collapse" id="collapse-market">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col">Level</th>
+                          <th scope="col">Attack</th>
+                          <th scope="col">Defense</th>
+                          <th scope="col">Speed</th>
+                          <th scope="col">Price</th>
+                          <th scope="col">Buy</th>
+                        </tr>
+                      </thead>
+                      <tbody id="market-list"></tbody>
+                    </table>
+                    <hr>
+                    <h4><strong>Sell monster:</strong></h4>
+                    <form onSubmit="App.sell()" role="form">
+                      <div class="form-inline"><strong>ID:</strong>
+                        <select class="form-control" id="sell-list"></select>
+                        <br><div style="padding-top:10px">
+                          <strong>Price: </strong><input type="text" class="form-control" id="price"><span style="padding-left:5px"><strong>Wei</strong></span>
+                          <span style="float:right"><button type="submit" class="btn btn-md btn-success"><strong>Sell</strong></button></span>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                  <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div id="account-address">
-            <div class="panel panel-info">
-              <div class="panel-heading text-center"><strong>Your account</strong></div>
-              <div class="panel-body text-center" id="address"></div>
-            </div>
-          </div>
+                </div>
+              </td>
+              <td valign="top" style="padding-left:10px">
+                <div class="panel panel-info" style="width:500px">
+                  <div class="panel-heading text-center"><strong>Team selector</strong></div>
+                  <div class="panel-body">
+                    <div id="cryptomons-team-selector">
+                      <form onSubmit="App.teamSelect(); return false" role="form">
+                        <div class="form-inline">
+                          <select class="form-control" id="team-1"></select>
+                          <select class="form-control" id="team-2"></select>
+                          <select class="form-control" id="team-3"></select>
+                          <select class="form-control" id="team-4"></select>
+                          <select class="form-control" id="team-5"></select>
+                          <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
+                        </div>
+                      </form>
+                      <h4><div id="team" style="padding-top:5px; padding-botton:0px"><strong>Team:</strong> </div></h4>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="panel panel-info">
+                  <div class="panel-heading text-center"><strong>CryptoMons Battle</strong></div>
+                  <div class="panel-body">
+                    <div id="cryptomons-battle">
+                      <table class="table" style="margin-bottom: 0px">
+                        <thead>
+                          <tr>
+                            <th scope="col">Address</th>
+                            <th scope="col">Fight</th>
+                          </tr>
+                        </thead>
+                        <tbody id="battle-list"></tbody>
+                      </table>
+                      <hr>
+                      <form onSubmit="App.defend(); return false" role="form">
+                        <span class="text-center form-inline" id="defend">
+                          <strong>Bet: </strong><span style="padding-left:5px"><input type="number" class="form-control" id="bet" value="0" style="width:200px"></span><span style="padding-left:7px"><strong>Wei</strong></span>
+                          <span style="float:right"><button type="submit" class="btn btn-md btn-success"><strong>Defend</strong></button></span>
+                        </span>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="panel panel-info">
+                  <div class="panel-heading text-center"><strong>Buy CryptoMons Packs</strong></div>
+                  <div class="panel-body">
+                    <div id="cryptomons-buy">
+                      <form onSubmit="App.selectPack(); return false" role="form"><!--Add action!-->
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                          <label class="btn btn-lg btn-default">
+                            <input type="radio" name="options" id="standard" autocomplete="off"> Standard
+                          </label>
+                          <label class="btn btn-lg btn-default">
+                            <input type="radio" name="options" id="plus" autocomplete="off"> Plus
+                          </label>
+                          <label class="btn btn-lg btn-default">
+                            <input type="radio" name="options" id="maxi" autocomplete="off"> Maxi
+                          </label>
+                        </div>
+                        <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div id="account-address">
+                  <div class="panel panel-info">
+                    <div class="panel-heading text-center"><strong>Your account</strong></div>
+                    <div class="panel-body text-center" id="address"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="winner-modal" role="dialog">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h4 class="modal-title">Winner</h4>
+        </div>
+        <div class="modal-body" id="winner">
+          The winner is:
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -116,87 +196,3 @@
   </body>
 
 </html>
-      <!--<div class="row">
-        <div class="col-lg-12">
-          <h1 class="text-center" style="padding: 15px 0px 0px 0px"><img src="images/favicon.ico" style="padding: 0px 0px 10px 0px"><b>  CryptoMons</b></h1>
-          <hr/>
-          <br/>
-          <div id="loader">
-            <p class="text-center">Loading...</p>
-          </div>
-          <div id="list">
-            <div class="panel panel-info">
-              <div class="panel-heading" align="center">Your CryptoMons</div>
-              <div class="panel-body">
-                <table class="table" style="margin-bottom: 0px">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Level</th>
-                      <th scope="col">Attack Power</th>
-                      <th scope="col">Defense Power</th>
-                      <th scope="col">Vulnerable</th>
-                    </tr>
-                  </thead>
-                  <tbody id="cryptomons-list">
-                  </tbody>
-                </table>
-                <form onSubmit="App.setVulnerable(); return false" role="form">
-                  <div class="form-group">
-                    <div class="input-group" style="padding: 10px 0px 0px 0px">
-                      <select id="monsters" class="form-control input-md"></select>
-                      <span class="input-group-btn">
-                        <button type="submit" class="btn btn-primary btn-md">Set Vulnerable</button>
-                      </span>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          <hr/>
-          <div id="battle">
-            <div class="panel panel-info">
-              <div class="panel-heading text-center">CryptoMons Battle Matching</div>
-              <div class="panel-body">
-                <table class="table" style="margin-bottom: 0px">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Owner</th>
-                      <th scope="col">Fight!</th>
-                    </tr>
-                  </thead>
-                  <tbody id="cryptomons-battle">
-                  </tbody>
-                </table>
-                <form class="form-inline">
-                  <div class="input-group" style="padding: 0px 0px 10px 0px">
-                    <span class="input-group-addon label-primary" align="center" style="padding: 7px 7px 7px 7px; color: white">
-                      <b>Attack from:</b>
-                    </span>
-                    <select id="attacker" class="form-control input-sm" data-width="50%"></select>
-                  </div>
-                </form>
-                </form>
-              </div>
-            </div>
-          </div>
-          <hr/>
-          <div id="buy">
-            <div class="panel panel-info">
-              <div class="panel-heading text-center">CryptoMons Buy</div>
-
-            </div>
-          </div>
-          <hr/>
-          <div class="panel panel-info">
-            <div class="panel-heading"><div align="center">Your Account</div></div>
-            <div class="panel-body"><div class="text-center" id="accountAddress"></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  </body-->

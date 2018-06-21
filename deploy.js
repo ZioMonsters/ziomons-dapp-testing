@@ -28,6 +28,8 @@ const input = {
   'Interfaces.sol': readFileSync('../cryptomon-contracts/contracts/Interfaces.sol', 'utf-8'),
   'Mortal.sol': readFileSync('../cryptomon-contracts/contracts/Mortal.sol', 'utf-8'),
   'SafeMath.sol': readFileSync('../cryptomon-contracts/contracts/SafeMath.sol', 'utf-8'),
+  'CoreFunctions.sol': readFileSync('../cryptomon-contracts/contracts/CoreFunctions.sol', 'utf-8'),
+  'AdminPanel.sol': readFileSync('../cryptomon-contracts/contracts/AdminPanel.sol', 'utf-8')
 };
 
 //Contract compiling
