@@ -38,7 +38,7 @@ const abi = compiled.contracts['CryptoMon.sol:CryptoMon'].interface;
 const bytecode = compiled.contracts['CryptoMon.sol:CryptoMon'].bytecode;
 
 //ABI saving on JSON
-writeFileSync('./contracts/CryptoMon.json', JSON.stringify(abi));
+writeFileSync('./public/contracts/CryptoMon.json', JSON.stringify(abi));
 
 //Contract deploying
 const contract = web3.eth.contract(JSON.parse(abi));
@@ -47,7 +47,7 @@ let address = null;
 
 const instance = contract.new({
   data: '0x' + bytecode,
-  from: web3.eth.coinbase,
+  from: web3.eth.accounts[0],
   gas: 4712388
 }, (err, res) => {
   if(!address) address = res.address;
@@ -55,7 +55,7 @@ const instance = contract.new({
 
 setTimeout(() => {
   console.log('Contract address:', address);
-  writeFileSync('./contracts/address.txt', address.toString());
+  writeFileSync('./public/contracts/address.txt', address.toString());
 }, 2000);
 /*
 setTimeout(() => {

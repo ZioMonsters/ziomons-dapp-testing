@@ -3,6 +3,7 @@
 
   <head>
     <!-- Bootstrap initialization -->
+    <link rel="shortcut icon" href="/img/favicon.ico"/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,9 +15,9 @@
     <div class="container" style="width:1300px">
       <div class="row">
         <div class="col-lg-20">
-          <h1 class="text-center bold" style="padding-top:15px"><strong>CryptoMons GUI</strong></h1>
+          <div class="text-center"><h1><strong>Crypto<img style="padding-left:20px; padding-right:20px" src="/img/badge.png">Mons</strong></h1></div>
           <hr>
-          <div id="admin-panel" style="display: none">
+          <div id="admin-panel" style="display: none; width:1310px">
             <div class="panel panel-info">
               <div class="panel-heading text-center"><strong>Admin Panel</strong></div>
               <div class="panel-body">
@@ -31,9 +32,12 @@
                       <option>Modifier Plus</option>
                       <option>Modifier Maxi</option>
                       <option>Matchmaking Range</option>
+                      <option>Possible upgrade</option>
+                      <option>Fees</option>
                     </select>
                     <span style="padding-left:10px"><strong>Assign new value:</strong></span>
-                    <input type="number" class="form-control" id="parameter-value" placeholder="Value" style="width:180px;">
+                    <span style="padding-left: 10px"><input type="number" class="form-control" id="parameter-value" placeholder="Value" style="width:180px;"></span>
+                    <span id="contract-money" style="padding-left:150px"></span>
                     <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
                   </div>
                 </form>
@@ -57,10 +61,13 @@
                             <th scope="col">Defense</th>
                             <th scope="col">Speed</th>
                             <th scope="col">EXP</th>
+                            <th scope="col" style="width:20px; padding:0"></th>
                           </tr>
                         </thead>
                         <tbody id="list"></tbody>
                       </table>
+                      <hr>
+                      <span style="float:right"><button onclick="App.lvlUp(); return false" class="btn btn-md btn-success"><strong>Level up</strong></span>
                     </div>
                   </div>
                 </div>
@@ -103,11 +110,11 @@
                     <div id="cryptomons-team-selector">
                       <form onSubmit="App.teamSelect(); return false" role="form">
                         <div class="form-inline">
-                          <select class="form-control" id="team-1"></select>
-                          <select class="form-control" id="team-2"></select>
-                          <select class="form-control" id="team-3"></select>
-                          <select class="form-control" id="team-4"></select>
-                          <select class="form-control" id="team-5"></select>
+                          <input type="number" min="0" class="form-control" id="team-1" style="width:60px">
+                          <input type="number" min="0" class="form-control" id="team-2" style="width:60px">
+                          <input type="number" min="0" class="form-control" id="team-3" style="width:60px">
+                          <input type="number" min="0" class="form-control" id="team-4" style="width:60px">
+                          <input type="number" min="0" class="form-control" id="team-5" style="width:60px">
                           <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
                         </div>
                       </form>
@@ -131,9 +138,13 @@
                       </table>
                       <hr>
                       <form onSubmit="App.defend(); return false" role="form">
-                        <span class="text-center form-inline" id="defend">
-                          <strong>Bet: </strong><span style="padding-left:5px"><input type="number" class="form-control" id="bet" value="0" style="width:200px"></span><span style="padding-left:7px"><strong>Wei</strong></span>
-                          <span style="float:right"><button type="submit" class="btn btn-md btn-success"><strong>Defend</strong></button></span>
+                        <span class="text-center form-inline" id="betting">
+                          <table>
+                            <tr>
+                              <td><strong>Bet: </strong><input type="number" class="form-control text-right" id="bet" value="0"></td>
+                              <td><strong>Min Bet: </strong><input type="number" class="form-control text-right" id="min-bet" value="0"></td>
+                            </tr>
+                          </table>
                         </span>
                       </form>
                     </div>
@@ -162,6 +173,18 @@
                   </div>
                 </div>
                 <hr>
+                <div id="account-money">
+                  <div class="panel panel-info">
+                    <div class="panel-heading text-center"><strong>Your money</strong></div>
+                    <div class="panel-body">
+                      <form onsubmit="" role"form">
+                        <span id="money"></span>
+                        <span style="float:right"><button type="submit" class="btn btn-md btn-success"><strong>Withdraw</strong></span>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <hr>
                 <div id="account-address">
                   <div class="panel panel-info">
                     <div class="panel-heading text-center"><strong>Your account</strong></div>
@@ -176,23 +199,34 @@
     </div>
 
     <div class="modal fade" id="winner-modal" role="dialog">
-    <div class="modal-dialog modal-md">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h4 class="modal-title">Winner</h4>
+          </div>
+          <div class="modal-body" id="winner"></div>
+        </div>
+      </div>
+  </div>
+
+  <div class="modal fade" id="level-up-modal" role="dialog">
+    <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">×</button>
-          <h4 class="modal-title">Winner</h4>
+          <h4 class="modal-title text-center"><strong>Level up!</strong></h4>
         </div>
-        <div class="modal-body" id="winner">
-          The winner is:
-        </div>
+        <div class="modal-body" id="level-up-monsters"></div>
+        <div class="modal-footer"><button type="button" class="btn btn-success" onclick="App.sendLvlUp(); return false" data-dismiss="modal">Confirm</button></div>
       </div>
     </div>
   </div>
 
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/app.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/app.js"></script>
   </body>
 
 </html>
