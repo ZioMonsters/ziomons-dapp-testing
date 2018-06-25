@@ -15,7 +15,7 @@
     <div class="container" style="width:1300px">
       <div class="row">
         <div class="col-lg-20">
-          <div class="text-center"><h1><strong>Crypto<img style="padding-left:20px; padding-right:20px" src="/img/badge.png">Mons</strong></h1></div>
+          <div class="text-center"><h1><strong>Crypto<img style="padding-left:20px; padding-right:20px" src="/img/badge.jpg">Mons</strong></h1></div>
           <hr>
           <div id="admin-panel" style="display: none; width:1310px">
             <div class="panel panel-info">
@@ -61,7 +61,8 @@
                             <th scope="col">Defense</th>
                             <th scope="col">Speed</th>
                             <th scope="col">EXP</th>
-                            <th scope="col" style="width:20px; padding:0"></th>
+                            <th scope="col" style="width:1px; padding:0"></th>
+                            <th scope="col" style="width:1px;padding:0"></th>
                           </tr>
                         </thead>
                         <tbody id="list"></tbody>
@@ -91,7 +92,7 @@
                     </table>
                     <hr>
                     <h4><strong>Sell monster:</strong></h4>
-                    <form onSubmit="App.sell()" role="form">
+                    <form onSubmit="App.sell(); return false" role="form">
                       <div class="form-inline"><strong>ID:</strong>
                         <select class="form-control" id="sell-list"></select>
                         <br><div style="padding-top:10px">
@@ -115,7 +116,10 @@
                           <input type="number" min="0" class="form-control" id="team-3" style="width:60px">
                           <input type="number" min="0" class="form-control" id="team-4" style="width:60px">
                           <input type="number" min="0" class="form-control" id="team-5" style="width:60px">
-                          <span style="float:right"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></span>
+                          <span style="float:right">
+                            <button type="submit" style="padding: 5px 7.5px" onclick="App.teamReset(); return false" class="btn btn-lg btn-danger glyphicon glyphicon glyphicon-trash"></button>
+                            <span style="padding-left: 10px"><button type="submit" style="padding: 5px 7.5px" class="btn btn-lg btn-success glyphicon glyphicon-ok"></button></span>
+                          </span>
                         </div>
                       </form>
                       <h4><div id="team" style="padding-top:5px; padding-botton:0px"><strong>Team:</strong> </div></h4>
@@ -137,16 +141,18 @@
                         <tbody id="battle-list"></tbody>
                       </table>
                       <hr>
-                      <form onSubmit="App.defend(); return false" role="form">
-                        <span class="text-center form-inline" id="betting">
-                          <table>
-                            <tr>
-                              <td><strong>Bet: </strong><input type="number" class="form-control text-right" id="bet" value="0"></td>
-                              <td><strong>Min Bet: </strong><input type="number" class="form-control text-right" id="min-bet" value="0"></td>
-                            </tr>
-                          </table>
-                        </span>
-                      </form>
+                      <table class="table">
+                        <thead>
+                          <th scope="col" class="text-center">Bet:</th>
+                          <th scope="col" class="text-center">Min Bet:</th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><input type="number" class="form-control text-right" id="bet" value="0"></td>
+                            <td><input type="number" class="form-control text-right" id="min-bet" value="0"></td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>

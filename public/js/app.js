@@ -37,14 +37,14 @@ App = {
           App.contract = web3.eth.contract(JSON.parse(abi));
           console.log('Contract address:', App.address);
         }, 'text').done(() => {
-          App.listenForEvents();
+          App.listenUnboxed();
           return App.render();
         });
       });
     });
   },
 
-  listenForEvents: () => {
+  listenUnboxed: () => {
     App.contract.at(App.address).Unboxed((err, res) => {
       if(res.args['_player'] === App.account) {
         App.lastEvent++;
@@ -53,17 +53,34 @@ App = {
     });
   },
 
+  listenForSale: () => {
+    App.contract.at(App.address).ForSale().watch((err, res) => {
+      if(res.args['_player'] === App.account) {
+        App.contract.at(App.address).ForSale().stopWatching();
+        return App.render();
+      }
+    });
+  },
+
+  listenBought: () => {
+    App.contract.at(App.address).Bought().watch((err, res) => {
+      if(res.args['_to'] === App.account) {
+        App.contract.at(App.address).Bought().stopWatching();
+        return App.render();
+      }
+    });
+  },
+
   render: () => {
-    if (App.account === '0x53fae43e0bee6bb47fc9770588f2616c28572aed') $('#admin-panel').show();
-    App.contract.at(App.address).money(App.account, (err, res) => {
-      $('#money').empty().append(`<strong>Money owned: </strong> ${res.toNumber()} WEI`);
-    });
-    App.contract.at(App.address).test_getContractMoney.call((err, res) => {
-      $('#contract-money').empty().append(`<strong>Contract money: </strong> ${res.toNumber()} WEI`)
-    });
+    if (App.account === '0x53fae43e0bee6bb47fc9770588f2616c28572aed') {
+      $('#admin-panel').show();
+    }
+    App.contract.at(App.address).money(App.account, (err, res) => $('#money').empty().append(`<strong>Money owned: </strong> ${res.toNumber()} WEI`));
+    App.contract.at(App.address).test_getContractMoney.call((err, res) => $('#contract-money').empty().append(`<strong>Contract money: </strong> ${res.toNumber()} WEI`));
     App.contract.at(App.address).totalSupply.call((err, res) => {
       const monstersCount = res.toNumber();
       $('#list').empty();
+      $('#market-list').empty();
       for (let i = 0; i < 5; i++) {
         $(`#team-${i+1}`).empty();
       }
@@ -73,15 +90,15 @@ App = {
           if (owner !== App.account && !App.inBattleList) $('#battle-list').html(`<tr><td>${owner}</td><td><form onSubmit="App.fight('${owner}'); return false" role="form"><div class="form-group" id="attack"><button type="submit" class="btn btn-md btn-success"><strong>Battle</strong></button></div></form></td></tr>`);
           App.contract.at(App.address).monsters(i, (err, res) => {
             const rarityColors = ['#f2f2f2', '#ccffff', '#ffccee', '#ffff66'];
-            const atk = res[0], def = res[1], spd = res[2], lvl = res[3].toNumber(), exp = res[4].toNumber(), rarity = res[5];
+            const atk = res[0], def = res[1], spd = res[2], lvl = res[3].toNumber(), exp = res[5].toNumber(), rarity = res[4];
             App.contract.at(App.address).inSale(i, (err, res) => {
-              const price = (res.toNumber())/10000000000000;
+              const price = res.toNumber();
               if (owner === App.account) {
-                const listTemplate = `<tr style="background-color:${rarityColors[rarity]} !important"><th>${i}</th><td>${lvl}</td><td>${atk}</td><td>${def}</td><td>${spd}</td><td>${exp}</td><td>${(Math.cbrt(exp*5)>=lvl) ? `<input type="checkbox" class="glyphicon glyphicon-plus" id="level-up-${i}">` : ''}</td></tr>`;
+                const listTemplate = `<tr style="background-color:${rarityColors[rarity]} !important"><th>${i}</th><td>${lvl}</td><td>${atk}</td><td>${def}</td><td>${spd}</td><td>${exp}</td><td>${(Math.cbrt(exp*5)>=lvl) ? `<input type="checkbox" class="glyphicon glyphicon-plus" id="level-up-${i}">` : ''}</td><td>${(price) ? '<div class="glyphicon glyphicon-usd" style="padding-top:6px"></div>' : ''}</td></tr>`;
                 $('#list').append(listTemplate);
                 $('#sell-list').append(`<option>${i}</option>`);
               } else if (owner !== App.account && price !== 0) {
-                $('#market-list').append(`<tr><th>${i}</th><td>${lvl}</td><td>${atk}</td><td>${def}</td><td>${spd}</td><td>${price} ETH</td><td><form onSubmit="App.buy(${i},${price}); return false" role="form"><div class=" form-group" id="buy"><button type="submit" class="btn btn-md btn-success"><strong>Buy</strong></button></div></form></td></tr>`);
+                $('#market-list').append(`<tr style="background-color:${rarityColors[rarity]}"><th>${i}</th><td>${lvl}</td><td>${atk}</td><td>${def}</td><td>${spd}</td><td>${price/1000000000000000000} ETH</td><td><form onSubmit="App.buy(${i},${price}); return false" role="form"><div class=" form-group" id="buy"><button type="submit" id="buy-${i}" class="btn btn-md btn-success"><strong>Buy</strong></button></div></form></td></tr>`);
               }
             });
           });
@@ -99,7 +116,7 @@ App = {
           const owner = res;
           App.contract.at(App.address).monsters(i, (err, res) => {
             if (owner === App.account) {
-              const lvl = res[3].toNumber(), exp = res[4].toNumber();
+              const lvl = res[3].toNumber(), exp = res[5].toNumber();
               if ($(`#level-up-${i}`).is(':checked')) {
                 $('#level-up-monsters').append(`<table class="table text-center"><thead><div class="text-center"><strong>Monster #${i}</strong></div></thead><tbody><tr><td>ATK<br><input type="number" id="atk-${i}" value="0" class="input-sm form-control" min="0"></td><td>DEF<br><input type="number" id="def-${i}" value="0" class="input-sm form-control" min="0"></td><td>SPD<br><input type="number" id="spd-${i}" value="0" class="input-sm form-control" min="0"></td></tr><tr><td></td><td><div id="skillpoints-${i}"></div></td><td></td></tr></tbody></table>`);
                 App.skilledMonsters.push(i);
@@ -131,6 +148,7 @@ App = {
       spdUpgrades.push(parseInt($(`#spd-${App.skilledMonsters[i]}`).val()));
     }
     console.log(App.skilledMonsters, atkUpgrades, defUpgrades, spdUpgrades);
+    App.contract.at(App.address).lvlUp(App.skilledMonsters, atkUpgrades, defUpgrades, spdUpgrades, console.log);
     App.skilledMonsters = [];
   },
 
@@ -154,23 +172,27 @@ App = {
         App.team.push(selection);
         if ($('#team').html() === '<strong>Team:</strong> Invalid selection') {
           $('#team').empty().append('<strong>Team:</strong> ')
-        };
+        }
         $('#team').append($(`#team-${i+1}`).val() + ' ');
       }
     }
   },
 
+  teamReset: () => {
+    App.team = [];
+    $('#team').empty().append('<strong>Team:</strong>');
+  },
+
   fight: (to) => {
     const bet = $('#bet').val(), minBet = $('#min-bet').val();
-    App.contract.at(App.address).attack(App.team, minBet, {from: App.account, value: bet}, (err, res) => {
+    App.contract.at(App.address).fight(App.team, minBet, {from: App.account, value: bet}, (err, res) => {
       console.log('Attacking with', App.team, '| Min bet:', minBet, '| Money bet:', bet);
-      return App.results();
+      App.results();
     });
   },
 
   results: () => {
     App.contract.at(App.address).Results().watch((err, res) => {
-      App.team = [];
       const winner = res.args['_winnerId'].toNumber();
       switch (winner) {
         case 0:
@@ -190,15 +212,18 @@ App = {
 
   sell: () => {
     const id = $('#sell-list').val();
-    const price = $('#price').val();$('parameter-value').val()
+    const price = parseInt($('#price').val());
     App.contract.at(App.address).sellMonster(id, price, (err, res) => {
       console.log('Monster number', id, 'is now for sale for', price, 'Wei');
+      App.listenForSale();
     });
   },
 
   buy: (id, price) => {
-    App.contract.at(App.address).buyMonster(id, {value: price*1000000000000000000}, (err, res) => {
+    App.contract.at(App.address).buyMonster(id, {value: price, gas: 200000}, (err, res) => {
       console.log('Monster number', id, 'bought for', price, 'Wei');
+      $(`#buy-${id}`).prop("disabled", true);
+      App.listenBought();
     });
   },
 
@@ -209,7 +234,7 @@ App = {
       pack = 'plus';
     } else if ($('#maxi').is(':checked')) {
       pack = 'maxi';
-    };
+    }
 
     switch (pack) {
       case 'standard':
@@ -221,7 +246,7 @@ App = {
       case 'maxi':
         App.unbox(8);
         break;
-    };
+    }
   },
 
   unbox: (price) => {
